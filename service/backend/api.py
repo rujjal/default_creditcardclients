@@ -6,9 +6,17 @@ import os
 import pickle
 import numpy as np
 from pyspark.ml import PipelineModel
+from pyspark.sql import SparkSession
+
+# Creating the Spark session
+spark = SparkSession.builder \
+    .appName("SparkFrontendApp") \
+    .config("spark.executor.memory", "1g") \
+    .config("spark.driver.memory", "1g") \
+    .getOrCreate()
 
 # importing the model
-rf_model_loaded = PipelineModel.load("C:/Users/rujjal.sada/Desktop/modified_project/service/backend/model/random_forest_model")
+rf_model_loaded = PipelineModel.load("/home/src/model/random_forest_model")
 
 # creating app
 api = FastAPI()  # define app using Flask

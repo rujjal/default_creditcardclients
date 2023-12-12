@@ -1,18 +1,18 @@
 FROM python:3.10-bookworm
 
-FROM spark:latest
-
-#ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+#FROM  spark:3.5.0-scala2.12-java17-ubuntu
 
 # change the user for executing operations
 USER root
 
 # updating apt packet manager
-RUN apt-get update && apt-get install -y --no-install-recommends 
+RUN apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless
 RUN  apt-get clean
 
 # updating pip
 RUN pip install --no-cache-dir --upgrade pip
+
+RUN pip install pyspark
 
 # moving to the working directory in the container
 WORKDIR /home
@@ -34,8 +34,5 @@ COPY ./api.py ./src
 # switching working directory
 WORKDIR /home/src
 
-RUN apt-get update && \
-    apt-get install -y python3
-
 # starting the app
-CMD ["python", "-m", "api"]
+CMD ["python3", "-m", "api"]
