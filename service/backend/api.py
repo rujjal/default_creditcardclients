@@ -10,7 +10,7 @@ from pyspark.ml import PipelineModel
 # importing the model
 rf_model_loaded = PipelineModel.load("C:/Users/rujjal.sada/Desktop/modified_project/service/backend/model/random_forest_model")
 
-# crating app
+# creating app
 api = FastAPI()  # define app using Flask
 
 class Debtor(BaseModel):
