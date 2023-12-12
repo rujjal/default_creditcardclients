@@ -1,0 +1,31 @@
+
+version: "3"
+services:
+
+  frontend:
+    container_name: frontend_container
+    build: ./frontend/
+    hostname: frontend
+    networks:
+        - model_net
+    depends_on:
+        - backend
+    environment:
+        - BACKEND_HOST=backend
+        - BACKEND_PORT=8080
+    ports:
+        - 8080:8080
+    restart: on-failure
+
+  backend:
+      container_name: backend_container
+      build: ./backend/
+      hostname: backend
+      networks:
+          - model_net
+      ports:
+          - 8081:8080
+      restart: on-failure
+
+networks:
+    model_net:
