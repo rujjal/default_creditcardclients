@@ -27,6 +27,7 @@ RUN pip install -r requirements.txt
 RUN mkdir -p src 
 RUN mkdir -p /src/model
 
+
 # copying src file from local (1) directory to container directory (2)
 COPY ./model ./src/model
 COPY ./api.py ./src

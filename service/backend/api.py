@@ -5,8 +5,9 @@ import uvicorn
 import os
 import pickle
 import numpy as np
-from pyspark.ml import PipelineModel
+#from pyspark.ml import PipelineModel
 from pyspark.sql import SparkSession
+import mlflow.spark
 
 # Creating the Spark session
 spark = SparkSession.builder \
@@ -16,7 +17,8 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # importing the model
-rf_model_loaded = PipelineModel.load("/home/src/model/random_forest_model")
+#rf_model_loaded = PipelineModel.load("/home/src/model/saved_model")
+rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model")
 
 # creating app
 api = FastAPI()  # define app using Flask
@@ -61,6 +63,8 @@ def predict(debtor: Debtor):
     return {'rf_prediction': rf_prediction.tolist()[0]} # return a single value
     
 
+spark.conf.set("spark.logConf", "true")
+spark.sparkContext.setLogLevel("WARN")
 
 #Run the API with uvicorn
 
