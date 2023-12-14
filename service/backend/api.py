@@ -18,7 +18,7 @@ spark = SparkSession.builder \
 
 # importing the model
 #rf_model_loaded = PipelineModel.load("/home/src/model/saved_model")
-rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model")
+rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model/MLmodel")
 
 # creating app
 api = FastAPI()

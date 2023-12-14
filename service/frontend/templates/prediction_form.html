@@ -70,7 +70,7 @@
         <h1>Credit Card Default Prediction Form</h1>
         <form method="post" action="/predict">
             <label for="Limit_bal">Limit Balance:</label>
-            <input type="number" name="Limit_bal" required>
+            <input type="float" name="Limit_bal" required>
 
             <label for="Sex">Sex:</label>
             <input type="number" name="Sex" required>
@@ -85,55 +85,58 @@
             <input type="number" name="Age" required>
 
             <label for="Pay_1">Pay_1:</label>
-            <input type="number" name="Pay_1" required>
+            <input type="float" name="Pay_1" required>
 
             <label for="Pay_2">Pay_2:</label>
-            <input type="number" name="Pay_2" required>
+            <input type="float" name="Pay_2" required>
 
             <label for="Pay_3">Pay_3:</label>
-            <input type="number" name="Pay_3" required>
+            <input type="float" name="Pay_3" required>
 
             <label for="Pay_4">Pay_4:</label>
-            <input type="number" name="Pay_4" required>
+            <input type="float" name="Pay_4" required>
 
             <label for="Pay_5">Pay_5:</label>
-            <input type="number" name="Pay_5" required>
+            <input type="float" name="Pay_5" required>
 
             <label for="Pay_6">Pay_6:</label>
-            <input type="number" name="Pay_6" required>
+            <input type="float" name="Pay_6" required>
 
             <label for="Bill_amt1">Bill Amount 1:</label>
-            <input type="number" name="Bill_amt1" required>
+            <input type="float" name="Bill_amt1" required>
 
             <label for="Bill_amt2">Bill Amount 2:</label>
-            <input type="number" name="Bill_amt2" required>
+            <input type="float" name="Bill_amt2" required>
 
             <label for="Bill_amt3">Bill Amount 3:</label>
-            <input type="number" name="Bill_amt3" required>
+            <input type="float" name="Bill_amt3" required>
 
             <label for="Bill_amt4">Bill Amount 4:</label>
-            <input type="number" name="Bill_amt4" required>
+            <input type="float" name="Bill_amt4" required>
 
             <label for="Bill_amt5">Bill Amount 5:</label>
-            <input type="number" name="Bill_amt5" required>
+            <input type="float" name="Bill_amt5" required>
+
+            <label for="Bill_amt6">Bill Amount 5:</label>
+            <input type="float" name="Bill_amt6" required>
 
             <label for="Pay_amt1">Payment Amount 1:</label>
-            <input type="number" name="Pay_amt1" required>
+            <input type="float" name="Pay_amt1" required>
 
             <label for="Pay_amt2">Payment Amount 2:</label>
-            <input type="number" name="Pay_amt2" required>
+            <input type="float" name="Pay_amt2" required>
 
             <label for="Pay_amt3">Payment Amount 3:</label>
-            <input type="number" name="Pay_amt3" required>
+            <input type="float" name="Pay_amt3" required>
 
             <label for="Pay_amt4">Payment Amount 4:</label>
-            <input type="number" name="Pay_amt4" required>
+            <input type="float" name="Pay_amt4" required>
 
             <label for="Pay_amt5">Payment Amount 5:</label>
-            <input type="number" name="Pay_amt5" required>
+            <input type="float" name="Pay_amt5" required>
 
             <label for="Pay_amt6">Payment Amount 6:</label>
-            <input type="number" name="Pay_amt6" required>
+            <input type="float" name="Pay_amt6" required>
 
             <button type="submit">Predict</button>
         </form>
