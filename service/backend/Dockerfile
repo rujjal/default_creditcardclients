@@ -1,6 +1,7 @@
-#FROM python:3.10-bookworm
-
-FROM spark:3.5.0-scala2.12-java17-python3-ubuntu
+# the same image used for the implementation of the notebook
+# I used this image to avoid spark version mismatch between 
+# the version used for creating the model, and the one used to load it in the backend
+FROM quay.io/jupyter/pyspark-notebook
 
 # change the user for executing operations
 USER root
@@ -12,8 +13,15 @@ RUN  apt-get clean
 # updating pip
 RUN pip install --no-cache-dir --upgrade pip
 
-RUN pip install pyspark
-RUN pip install mlflow
+# you are asking 2 times for the insallation of this tools
+# because you can find it also in requirements.txt
+# RUN pip install pyspark
+# RUN pip install mlflow
+
+# TIPS:
+# if you want to install some python libraries in a container
+# if they are more than one it's recommended to use a requirements.txt file 
+# and insert inside all the neede library and let pip install it (command in line 31)
 
 # moving to the working directory in the container
 WORKDIR /home

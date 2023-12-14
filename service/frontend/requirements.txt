@@ -4,4 +4,3 @@ fastapi
 requests
 Jinja2
 python-multipart
-pyspark
