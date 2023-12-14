@@ -21,7 +21,7 @@ spark = SparkSession.builder \
 rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model")
 
 # creating app
-api = FastAPI()  # define app using Flask
+api = FastAPI()
 
 class Debtor(BaseModel):
     Limit_bal: float
@@ -63,7 +63,6 @@ def predict(debtor: Debtor):
     return {'rf_prediction': rf_prediction.tolist()[0]} # return a single value
     
 
-spark.conf.set("spark.logConf", "true")
 spark.sparkContext.setLogLevel("WARN")
 
 #Run the API with uvicorn

@@ -13,6 +13,14 @@ templates = Jinja2Templates(directory="templates")
 API_HOST = str(os.getenv("BACKEND_HOST"))
 API_PORT = str(os.getenv("BACKEND_PORT"))
 
+@app.get('/')
+def welcome(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get('/predict_spark')
+def get_predict_spark(request: Request):
+    return templates.TemplateResponse("prediction_form.html", {"request": request})
+
 
 @app.post('/predict_spark')
 def post_predict_spark(request: Request,
@@ -53,5 +61,8 @@ def post_predict_spark(request: Request,
     response_spark = requests.post(api_url_spark, json=json_input)
     response_spark = response_spark.json()
 
-    return templates.TemplateResponse("prediction_form.html", {"request": request, "rf_prediction_spark": response_spark["rf_prediction"]})
+    return templates.TemplateResponse("prediction_form.html", {"request": request, "rf_prediction": response_spark["rf_prediction"]})
 
+if __name__ == '__main__':
+    # need to use 0.0.0.0 in docker as localhost to avoid error during startup
+    uvicorn.run(app, host='0.0.0.0', port=8080)
