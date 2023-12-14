@@ -1,21 +1,148 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Credit Card Default Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Welcome to a prediction application for default payment of next month of Credit Card Clients!</h1>
-        <p>We provide a usefull machine learning model for the task.</p>
-        <p>If you have some information about a debtor you can click the following button and you will be redirected to an input form to do some inference.</p>
-        <a href="/predict_spark">
-            <button>Prediction Form</button>
-        </a>
+        <h1>Credit Card Default Prediction Form</h1>
+        <form method="post" action="/predict">
+            <label for="Limit_bal">Limit Balance:</label>
+            <input type="number" name="Limit_bal" required>
+
+            <label for="Sex">Sex:</label>
+            <input type="number" name="Sex" required>
+
+            <label for="Education">Education:</label>
+            <input type="number" name="Education" required>
+
+            <label for="Marriage">Marriage:</label>
+            <input type="number" name="Marriage" required>
+
+            <label for="Age">Age:</label>
+            <input type="number" name="Age" required>
+
+            <label for="Pay_1">Pay_1:</label>
+            <input type="number" name="Pay_1" required>
+
+            <label for="Pay_2">Pay_2:</label>
+            <input type="number" name="Pay_2" required>
+
+            <label for="Pay_3">Pay_3:</label>
+            <input type="number" name="Pay_3" required>
+
+            <label for="Pay_4">Pay_4:</label>
+            <input type="number" name="Pay_4" required>
+
+            <label for="Pay_5">Pay_5:</label>
+            <input type="number" name="Pay_5" required>
+
+            <label for="Pay_6">Pay_6:</label>
+            <input type="number" name="Pay_6" required>
+
+            <label for="Bill_amt1">Bill Amount 1:</label>
+            <input type="number" name="Bill_amt1" required>
+
+            <label for="Bill_amt2">Bill Amount 2:</label>
+            <input type="number" name="Bill_amt2" required>
+
+            <label for="Bill_amt3">Bill Amount 3:</label>
+            <input type="number" name="Bill_amt3" required>
+
+            <label for="Bill_amt4">Bill Amount 4:</label>
+            <input type="number" name="Bill_amt4" required>
+
+            <label for="Bill_amt5">Bill Amount 5:</label>
+            <input type="number" name="Bill_amt5" required>
+
+            <label for="Pay_amt1">Payment Amount 1:</label>
+            <input type="number" name="Pay_amt1" required>
+
+            <label for="Pay_amt2">Payment Amount 2:</label>
+            <input type="number" name="Pay_amt2" required>
+
+            <label for="Pay_amt3">Payment Amount 3:</label>
+            <input type="number" name="Pay_amt3" required>
+
+            <label for="Pay_amt4">Payment Amount 4:</label>
+            <input type="number" name="Pay_amt4" required>
+
+            <label for="Pay_amt5">Payment Amount 5:</label>
+            <input type="number" name="Pay_amt5" required>
+
+            <label for="Pay_amt6">Payment Amount 6:</label>
+            <input type="number" name="Pay_amt6" required>
+
+            <button type="submit">Predict</button>
+        </form>
     </div>
+
+    {% if rf_prediction %}
+        <h2>Prediction Result:</h2>
+        <p>Random Forest Prediction: {{ rf_prediction }}</p>
+    {% endif %}
 
 </body>
 </html>

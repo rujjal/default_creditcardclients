@@ -17,36 +17,36 @@ API_PORT = str(os.getenv("BACKEND_PORT"))
 def welcome(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get('/predict_spark')
-def get_predict_spark(request: Request):
+@app.get('/predict')
+def get_predict(request: Request):
     return templates.TemplateResponse("prediction_form.html", {"request": request})
 
 
-@app.post('/predict_spark')
-def post_predict_spark(request: Request,
-                       Limit_bal: float = Form(...),
-                       Sex: float = Form(...),
-                       Education: float = Form(...),
-                       Marriage: float = Form(...),
-                       Age: float = Form(...),
-                       Pay_1: float = Form(...),
-                       Pay_2: float = Form(...),
-                       Pay_3: float = Form(...),
-                       Pay_4: float = Form(...),
-                       Pay_5: float = Form(...),
-                       Pay_6: float = Form(...),
-                       Bill_amt1: float = Form(...),
-                       Bill_amt2: float = Form(...),
-                       Bill_amt3: float = Form(...),
-                       Bill_amt4: float = Form(...),
-                       Bill_amt5: float = Form(...),
-                       Pay_amt1: float = Form(...),
-                       Pay_amt2: float = Form(...),
-                       Pay_amt3: float = Form(...),
-                       Pay_amt4: float = Form(...),
-                       Pay_amt5: float = Form(...),
-                       Pay_amt6: float = Form(...)
-                       ):
+@app.post('/predict')
+def post_predict(request: Request,
+                Limit_bal: float = Form(...),
+                Sex: float = Form(...),
+                Education: float = Form(...),
+                Marriage: float = Form(...),
+                Age: float = Form(...),
+                Pay_1: float = Form(...),
+                Pay_2: float = Form(...),
+                Pay_3: float = Form(...),
+                Pay_4: float = Form(...),
+                Pay_5: float = Form(...),
+                Pay_6: float = Form(...),
+                Bill_amt1: float = Form(...),
+                Bill_amt2: float = Form(...),
+                Bill_amt3: float = Form(...),
+                Bill_amt4: float = Form(...),
+                Bill_amt5: float = Form(...),
+                Pay_amt1: float = Form(...),
+                Pay_amt2: float = Form(...),
+                Pay_amt3: float = Form(...),
+                Pay_amt4: float = Form(...),
+                Pay_amt5: float = Form(...),
+                Pay_amt6: float = Form(...)
+                ):
 
     
     col_names = ["Limt_bal", "Sex", "Education", "Marriage", "Age", "Pay_1", " Pay_2", "Pay_3", "Pay_4", "Pay_5", "Pay_6",
@@ -57,7 +57,7 @@ def post_predict_spark(request: Request,
     json_input = dict(zip(col_names, col_values))
 
     
-    api_url_spark = f"http://{API_HOST}:{API_PORT}/predict_spark"
+    api_url_spark = f"http://{API_HOST}:{API_PORT}/predict"
     response_spark = requests.post(api_url_spark, json=json_input)
     response_spark = response_spark.json()
 

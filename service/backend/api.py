@@ -48,17 +48,17 @@ class Debtor(BaseModel):
     Pay_amt5: float
     Pay_amt6: float
 
-@api.post('/predict_spark')
-def predict_spark(debtor: Debtor):    
+@api.post('/predict')
+def predict(debtor: Debtor):    
     
     # Reshape the input data to a 2D array
     input_data = [debtor.Limit_bal, debtor.Sex, debtor.Education, debtor.Marriage, debtor.Age, debtor.Pay_1, \
-        debtor.Pay_2, debtor.Pay_3, debtor.Pay_4, debtor.Pay_5, debtor.Pay_6, debtor.Bill_amt1, debtor.Bill_amt2, debtor.Bill_amt3,
+        debtor.Pay_2, debtor.Pay_3, debtor.Pay_4, debtor.Pay_5, debtor.Pay_6, debtor.Bill_amt1, debtor.Bill_amt2, debtor.Bill_amt3, \
         debtor.Bill_amt4, debtor.Bill_amt5, debtor.Bill_amt6, debtor.Pay_amt1, debtor.Pay_amt2, debtor.Pay_amt3, debtor.Pay_amt4,
         debtor.Pay_amt5, debtor.Pay_amt6]
     input_data = np.array(input_data)
     
-    rf_prediction = rf_model_loaded.predict_spark(input_data.reshape(1, -1))
+    rf_prediction = rf_model_loaded.predict(input_data.reshape(1, -1))
     
     return {'rf_prediction': rf_prediction.tolist()[0]} # return a single value
     
