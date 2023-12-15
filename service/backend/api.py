@@ -2,7 +2,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
-import numpy as np
 # if you use a PipelineModel to load the machine learning model 
 # it will throws an error because it's not a pipelinemodel the stored one but an rf model
 # I use the PipelineModel to load the object to do the preprocessing
@@ -27,6 +26,7 @@ preproc_pipeline_loaded = PipelineModel.load("/home/src/model/preproc_pipeline")
 #rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model")
 
 # the same used in the preprocessing object except for education_grouped
+# because the pipeline saved need the correct column name
 feature_columns = ["LIMIT_BAL", "SEX", "EDUCATION", "MARRIAGE", "AGE",
                 "PAY_1", "PAY_2", "PAY_3", "PAY_4", "PAY_5", "PAY_6",
                 "BILL_AMT1", "BILL_AMT2", "BILL_AMT3", "BILL_AMT4", "BILL_AMT5", "BILL_AMT6",
@@ -85,9 +85,17 @@ def predict(debtor: Debtor):
     # applying preprocessing step
     preprocessed_data = preproc_pipeline_loaded.transform(input_data)
     
-    rf_prediction = rf_model_loaded.predict(preprocessed_data)
+    # if you do the prediction like this pyspark throws an exception
+    # because the model need a Vector object to do the inference and
+    # can't execute the prediction on a Dataset object
+    # rf_prediction = rf_model_loaded.predict(preprocessed_data) 
+    
+    # prediction step
+    features_col_name = rf_model_loaded.getFeaturesCol() # take the features col from the model to generalize the code
+    dense_vector_input = preprocessed_data.head()[features_col_name] # get the dense vector from the preprocessed data
+    rf_prediction = rf_model_loaded.predict(dense_vector_input) # executing the prediction method
 
-    return {'rf_prediction': rf_prediction.tolist()[0]} # return a single value
+    return {'rf_prediction': rf_prediction} # return a single value
     
 
 spark.sparkContext.setLogLevel("WARN")

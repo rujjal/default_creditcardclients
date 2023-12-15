@@ -40,6 +40,7 @@ def post_predict(request: Request,
                 Bill_amt3: float = Form(...),
                 Bill_amt4: float = Form(...),
                 Bill_amt5: float = Form(...),
+                Bill_amt6: float = Form(...),
                 Pay_amt1: float = Form(...),
                 Pay_amt2: float = Form(...),
                 Pay_amt3: float = Form(...),
@@ -48,19 +49,19 @@ def post_predict(request: Request,
                 Pay_amt6: float = Form(...)
                 ):
 
-    
-    col_names = ["Limt_bal", "Sex", "Education", "Marriage", "Age", "Pay_1", " Pay_2", "Pay_3", "Pay_4", "Pay_5", "Pay_6",
-                 "Bill_amt1", "Bill_amt2", "Bill_amt3", "Bill_amt4", "Bill_amt5", "Pay_amt1", "Pay_amt2", "Pay_amt3",
+    # in the previous version here you missed the "Bill_amt6" and wrote uncorrectly "Pay_2" so when the request was sent
+    # to the backend it cant unmarshal the input in the Debtor class and because of this the return is the http error 422 
+    col_names = ["Limit_bal", "Sex", "Education", "Marriage", "Age", "Pay_1", "Pay_2", "Pay_3", "Pay_4", "Pay_5", "Pay_6",
+                 "Bill_amt1", "Bill_amt2", "Bill_amt3", "Bill_amt4", "Bill_amt5", "Bill_amt6", "Pay_amt1", "Pay_amt2", "Pay_amt3",
                  "Pay_amt4", "Pay_amt5", "Pay_amt6"]
     col_values = [Limit_bal, Sex, Education, Marriage, Age, Pay_1, Pay_2, Pay_3, Pay_4, Pay_5, Pay_6, Bill_amt1,
-                   Bill_amt2, Bill_amt3, Bill_amt4, Bill_amt5, Pay_amt1, Pay_amt2, Pay_amt3, Pay_amt4, Pay_amt5, Pay_amt6]
+                   Bill_amt2, Bill_amt3, Bill_amt4, Bill_amt5, Bill_amt6, Pay_amt1, Pay_amt2, Pay_amt3, Pay_amt4, Pay_amt5, Pay_amt6]
     json_input = dict(zip(col_names, col_values))
-
     
     api_url_spark = f"http://{API_HOST}:{API_PORT}/predict"
     response_spark = requests.post(api_url_spark, json=json_input)
     response_spark = response_spark.json()
-
+    
     return templates.TemplateResponse("prediction_form.html", {"request": request, "rf_prediction": response_spark["rf_prediction"]})
 
 if __name__ == '__main__':

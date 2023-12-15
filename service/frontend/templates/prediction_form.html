@@ -142,9 +142,17 @@
         </form>
     </div>
 
-    {% if rf_prediction %}
+    <!-- 
+        If used only the clause "if rf_prediction"  when the prediction is 0
+        this value is interpreted as a boolean value and then it will not show the result in the frontend.
+        I aslo added the container to a better visualization
+    -->
+
+    {% if rf_prediction is defined %}
+    <div class="container">
         <h2>Prediction Result:</h2>
         <p>Random Forest Prediction: {{ rf_prediction }}</p>
+    </div>
     {% endif %}
 
 </body>
