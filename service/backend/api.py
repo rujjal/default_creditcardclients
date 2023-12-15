@@ -14,10 +14,12 @@ from pyspark.sql.functions import col, when
 #import mlflow.spark
 
 # Creating the Spark session
+# added the config in line 22 to avoid checksum control
 spark = SparkSession.builder \
     .appName("SparkBackendApp") \
     .config("spark.executor.memory", "1g") \
     .config("spark.driver.memory", "1g") \
+    .config("spark.shuffle.checksum.enabled", "false") \
     .getOrCreate()
 
 # importing the model
