@@ -12,6 +12,9 @@ from pyspark.sql.functions import col, when
 # don't need to use mlflow because I saved the model directly using pyspark from the notebook in the backend directory
 # take a look at the notebook in to see the operation done
 #import mlflow.spark
+# utility method to import java object used in spark backend into a python obj (used to avoid checksum control)
+from py4j.java_gateway import java_import 
+
 
 # Creating the Spark session
 # added the config in line 22 to avoid checksum control
@@ -19,8 +22,17 @@ spark = SparkSession.builder \
     .appName("SparkBackendApp") \
     .config("spark.executor.memory", "1g") \
     .config("spark.driver.memory", "1g") \
-    .config("spark.shuffle.checksum.enabled", "false") \
     .getOrCreate()
+
+
+conf = spark._jsc.hadoopConfiguration()
+# Import the necessary java object to avoid checksum control
+java_import(spark._jvm, 'org.apache.hadoop.fs.FileSystem')
+java_import(spark._jvm, 'org.apache.hadoop.fs.Path')
+# get hadoop file system obj (spark is based on hadoop hdfs)
+fs = spark._jvm.FileSystem.get(conf)
+# disable checksum verification
+fs.setVerifyChecksum(False)
 
 # importing the model
 rf_model_loaded = RandomForestClassificationModel.load("/home/src/model/rf_model")

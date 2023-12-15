@@ -3,3 +3,4 @@ pydantic
 uvicorn
 scikit-learn
 pyspark
+py4j
