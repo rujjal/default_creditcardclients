@@ -1,6 +1,7 @@
-#FROM python:3.10-bookworm
-
-FROM spark:3.5.0-scala2.12-java17-python3-ubuntu
+# the same image used for the implementation of the notebook
+# I used this image to avoid spark version mismatch between 
+# the version used for creating the model, and the one used to load it in the backend
+FROM quay.io/jupyter/pyspark-notebook
 
 # change the user for executing operations
 USER root

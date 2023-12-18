@@ -1,9 +1,6 @@
-
 fastapi
 pydantic
 uvicorn
-pandas
-numpy
 scikit-learn
 pyspark
-mlflow
+py4j

@@ -2,23 +2,49 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
-import os
-import pickle
-import numpy as np
-#from pyspark.ml import PipelineModel
+# if you use a PipelineModel to load the machine learning model 
+# it will throws an error because it's not a pipelinemodel the stored one but an rf model
+# I use the PipelineModel to load the object to do the preprocessing
+from pyspark.ml import PipelineModel
+from pyspark.ml.classification import RandomForestClassificationModel
 from pyspark.sql import SparkSession
-import mlflow.spark
+from pyspark.sql.functions import col, when
+# don't need to use mlflow because I saved the model directly using pyspark from the notebook in the backend directory
+# take a look at the notebook in to see the operation done
+#import mlflow.spark
+# utility method to import java object used in spark backend into a python obj (used to avoid checksum control)
+from py4j.java_gateway import java_import 
+
 
 # Creating the Spark session
+# added the config in line 22 to avoid checksum control
 spark = SparkSession.builder \
-    .appName("SparkFrontendApp") \
+    .appName("SparkBackendApp") \
     .config("spark.executor.memory", "1g") \
     .config("spark.driver.memory", "1g") \
     .getOrCreate()
 
+
+conf = spark._jsc.hadoopConfiguration()
+# Import the necessary java object to avoid checksum control
+java_import(spark._jvm, 'org.apache.hadoop.fs.FileSystem')
+java_import(spark._jvm, 'org.apache.hadoop.fs.Path')
+# get hadoop file system obj (spark is based on hadoop hdfs)
+fs = spark._jvm.FileSystem.get(conf)
+# disable checksum verification
+fs.setVerifyChecksum(False)
+
 # importing the model
-#rf_model_loaded = PipelineModel.load("/home/src/model/saved_model")
-rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model/MLmodel")
+rf_model_loaded = RandomForestClassificationModel.load("/home/src/model/rf_model")
+preproc_pipeline_loaded = PipelineModel.load("/home/src/model/preproc_pipeline")
+#rf_model_loaded = mlflow.spark.load_model("/home/src/model/saved_model")
+
+# the same used in the preprocessing object except for education_grouped
+# because the pipeline saved need the correct column name
+feature_columns = ["LIMIT_BAL", "SEX", "EDUCATION", "MARRIAGE", "AGE",
+                "PAY_1", "PAY_2", "PAY_3", "PAY_4", "PAY_5", "PAY_6",
+                "BILL_AMT1", "BILL_AMT2", "BILL_AMT3", "BILL_AMT4", "BILL_AMT5", "BILL_AMT6",
+                "PAY_AMT1", "PAY_AMT2", "PAY_AMT3", "PAY_AMT4", "PAY_AMT5", "PAY_AMT6"]
 
 # creating app
 api = FastAPI()
@@ -51,16 +77,39 @@ class Debtor(BaseModel):
 @api.post('/predict')
 def predict(debtor: Debtor):    
     
-    # Reshape the input data to a 2D array
+    # take the input data from the request using the Debtor class parameters
     input_data = [debtor.Limit_bal, debtor.Sex, debtor.Education, debtor.Marriage, debtor.Age, debtor.Pay_1, \
         debtor.Pay_2, debtor.Pay_3, debtor.Pay_4, debtor.Pay_5, debtor.Pay_6, debtor.Bill_amt1, debtor.Bill_amt2, debtor.Bill_amt3, \
         debtor.Bill_amt4, debtor.Bill_amt5, debtor.Bill_amt6, debtor.Pay_amt1, debtor.Pay_amt2, debtor.Pay_amt3, debtor.Pay_amt4,
         debtor.Pay_amt5, debtor.Pay_amt6]
-    input_data = np.array(input_data)
     
-    rf_prediction = rf_model_loaded.predict(input_data.reshape(1, -1))
+    # casting to tuple avoid the error in dataframe creation
+    # because of float type schema inference thrown if i use the original input_data
+    input_data = [tuple(input_data)] 
+    input_data = spark.createDataFrame(input_data, feature_columns)
     
-    return {'rf_prediction': rf_prediction.tolist()[0]} # return a single value
+    # Create "EDUCATION_grouped" column
+    input_data = input_data.withColumn(
+        "EDUCATION_grouped",
+        when((col("EDUCATION") == 4) | (col("EDUCATION") == 5) | (col("EDUCATION") == 6), 4)
+        .otherwise(col("EDUCATION"))
+    )
+
+    
+    # applying preprocessing step
+    preprocessed_data = preproc_pipeline_loaded.transform(input_data)
+    
+    # if you do the prediction like this pyspark throws an exception
+    # because the model need a Vector object to do the inference and
+    # can't execute the prediction on a Dataset object
+    # rf_prediction = rf_model_loaded.predict(preprocessed_data) 
+    
+    # prediction step
+    features_col_name = rf_model_loaded.getFeaturesCol() # take the features col from the model to generalize the code
+    dense_vector_input = preprocessed_data.head()[features_col_name] # get the dense vector from the preprocessed data
+    rf_prediction = rf_model_loaded.predict(dense_vector_input) # executing the prediction method
+
+    return {'rf_prediction': rf_prediction} # return a single value
     
 
 spark.sparkContext.setLogLevel("WARN")
