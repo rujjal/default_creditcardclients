@@ -12,10 +12,6 @@ RUN  apt-get clean
 # updating pip
 RUN pip install --no-cache-dir --upgrade pip
 
-RUN pip install pyspark
-RUN pip install mlflow
-
-
 # moving to the working directory in the container
 WORKDIR /home
 
